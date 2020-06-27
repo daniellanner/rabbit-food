@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <png.hpp>
 #include <algorithm>
+#include <fstream>
 
 png::image<png::rgba_pixel> resize_image(png::image<png::rgba_pixel> input)
 {
@@ -58,6 +59,11 @@ png::image<png::rgba_pixel> resize_image(png::image<png::rgba_pixel> input)
   return image;
 }
 
+inline bool FileExists(const std::string& name) {
+  std::ifstream f(name.c_str());
+  return f.good();
+}
+
 int main(int argc, char** argv)
 {
   std::cout << "Hello World!\n";
@@ -76,10 +82,18 @@ int main(int argc, char** argv)
     std::cout << argv[i] << "\n";
   }
 
+  std::string originPath = argv[0];
+  std::string inputFile = argv[1];
+
+  if (!FileExists(inputFile))
+  {
+    std::cout << "ERROR: Input file does not exist at location " << inputFile << std::endl;
+    return 1;
+  }
   
   try
   {
-    png::image< png::rgba_pixel > image("resized.png");
+    png::image< png::rgba_pixel > image(inputFile);
 
     png::image< png::rgba_pixel > output = resize_image(image);
     output.write("resized.png");
