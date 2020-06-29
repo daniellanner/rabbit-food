@@ -5,5 +5,5 @@ An implementation of Sean Feeley's mip chains flood-filling from his 2019 GDC ta
 
 Foliage texture dilation is used to avoid color bleeding for foliage alpha cut-outs when game engines generate mip maps. Traditionally this was done by blurring the image a couple of times. The proposed solution is faster and has a higher compression rate.
 
-[](test1.jpg)
-[](test2.jpg)
+[!](test1.jpg)
+[!](test2.jpg)
