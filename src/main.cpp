@@ -256,13 +256,13 @@ int main(int argc, char** argv)
     png::image< png::rgba_pixel > output = CompositeAlphaMip(image);
 
     //apply original alpha
-    //for (png::uint_32 y = 0; y < image.get_height(); ++y)
-    //{
-    //  for (png::uint_32 x = 0; x < image.get_width(); ++x)
-    //  {
-    //    output[y][x].alpha = image[y][x].alpha;
-    //  }
-    //}
+    for (png::uint_32 y = 0; y < image.get_height(); ++y)
+    {
+      for (png::uint_32 x = 0; x < image.get_width(); ++x)
+      {
+        output[y][x].alpha = image[y][x].alpha;
+      }
+    }
 
     output.write("resized.png");
   }
