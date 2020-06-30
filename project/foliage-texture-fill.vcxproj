@@ -20,6 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\mip_chain_fill.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\mip_chain_fill.h" />
+    <ClInclude Include="..\src\utilities.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
