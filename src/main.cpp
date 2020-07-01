@@ -10,6 +10,7 @@ int main(int argc, char** argv)
     return 0;
   }
 
+  TODO("file name as argv[1] and -f")
   std::string originPath = argv[0];
   std::string inputFile = argv[1];
 
@@ -62,6 +63,7 @@ int main(int argc, char** argv)
 
     png::image< png::rgba_pixel > output = fill.CompositeAlphaMip();
 
+    TODO("input name")
     output.write("resized.png");
   }
   catch (std::exception const& error)
