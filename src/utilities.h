@@ -11,6 +11,21 @@ typedef png::image<png::rgba_pixel> alpha_img;
 
 constexpr auto EPSILON = 0.00001;
 
+inline bool StringCompare(const std::string& str1, const std::string& str2)
+{
+  if (str1.size() != str2.size())
+  {
+    return false;
+  }
+
+  return std::equal(str1.begin(), str1.end(), str2.begin(),
+      [](char& c1, char& c2)
+      {
+        return (c1 == c2 || std::toupper(c1) == std::toupper(c2));
+      }
+  );
+}
+
 inline float FastLerp(const float a, const float b, const float t)
 {
   return a + t * (b - a);

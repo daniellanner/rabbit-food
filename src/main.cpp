@@ -1,22 +1,13 @@
 #include "utilities.h"
 #include "mip_chain_fill.h"
+#include "cxxopts.hpp"
 
 int main(int argc, char** argv)
 {
-  std::cout << "Hello World!\n";
-
   if (argc < 2)
   {
     // no input file selected
     return 0;
-  }
-
-  std::cout << "You have entered " << argc
-    << " arguments:" << "\n";
-
-  for (int i = 0; i < argc; ++i)
-  {
-    std::cout << argv[i] << "\n";
   }
 
   std::string originPath = argv[0];
@@ -27,6 +18,13 @@ int main(int argc, char** argv)
     std::cout << "ERROR: Input file does not exist at location " << inputFile << std::endl;
     return 1;
   }
+
+  cxxopts::Options options(argv[0]);
+  options.add_options()
+    ("f,file", "File name", cxxopts::value<std::string>())
+    ("npt,nonpoweroftwo", "Non Power of Two", cxxopts::value<std::string>())
+    ("t,threads", "Thread Count", cxxopts::value<int>())
+    ("help", "Print help");
 
   try
   {
