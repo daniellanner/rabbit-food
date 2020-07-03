@@ -17,15 +17,63 @@ int main(int argc, char** argv)
   if (!FileExists(inputFile))
   {
     std::cout << "ERROR: Input file does not exist at location " << inputFile << std::endl;
-    return 1;
+    //return 1;
   }
 
-  cxxopts::Options options(argv[0]);
+  cxxopts::Options options("test", "A brief description");
+  options.positional_help("<input file> <output file (optional)>");
+
   options.add_options()
-    ("f,file", "File name", cxxopts::value<std::string>())
-    ("npt,nonpoweroftwo", "Non Power of Two", cxxopts::value<std::string>())
-    ("t,threads", "Thread Count", cxxopts::value<int>())
-    ("help", "Print help");
+    ("b,bar", "Param bar", cxxopts::value<std::string>())
+    ("d,debug", "Enable debugging", cxxopts::value<bool>()->default_value("false"))
+    ("f,foo", "Param foo", cxxopts::value<int>()->default_value("10"))
+    ("h,help", "Print usage")
+    ("i,input", "Input file", cxxopts::value<std::string>())
+    ("o,output", "Output file", cxxopts::value<std::string>())
+    ("positional", "Positional parameters",
+      cxxopts::value<std::string>())
+    ;
+    
+  options.parse_positional({ "input", "positional" });
+  auto result = options.parse(argc, argv);
+
+  if (result.count("help"))
+  {
+    std::cout << options.help() << std::endl;
+    //exit(0);
+  }
+  bool debug = result["debug"].as<bool>();
+  std::string bar;
+  if (result.count("bar"))
+    bar = result["bar"].as<std::string>();
+  int foo = result["foo"].as<int>();
+
+
+  std::cout << "Foo: " << foo << std::endl;
+  std::cout << "Bar: " << bar << std::endl;
+
+
+  if (result.count("bar"))
+    bar = result["bar"].as<std::string>();
+
+  std::cout << "Bar: " << bar << std::endl;
+
+  if (result.count("input"))
+    bar = result["input"].as<std::string>();
+
+  std::cout << "First: " << bar << std::endl;
+
+  //cxxopts::Options options("My Test", "a test");
+  //options.add_options()
+  //  ("f,file", "File name", cxxopts::value<std::string>())
+  //  ("npt,nonpoweroftwo", "Non Power of Two", cxxopts::value<std::string>())
+  //  ("t,threads", "Thread Count", cxxopts::value<int>())
+  //  ("help", "Print help");
+
+  //options.parse_positional("file");
+  //auto result = options.parse(argc, argv);
+
+  //std::cout << "File: " << result["file"].as<std::string>() << std::endl;
 
   try
   {
