@@ -2,12 +2,15 @@
 #include "mip_chain_fill.h"
 #include "cxxopts.hpp"
 
+#define QUIT_SUCCESS 0
+#define QUIT_ERROR_INPUT 1
+#define QUIT_ERROR_OTHER 2
+
 int main(int argc, char** argv)
 {
   if (argc < 2)
   {
-    // no input file selected
-    return 0;
+    return QUIT_ERROR_INPUT;
   }
 
   TODO("try catch block with proper error handling")
@@ -30,7 +33,7 @@ int main(int argc, char** argv)
   if (result.count("help"))
   {
     std::cout << options.help() << std::endl;
-    exit(0);
+    return QUIT_SUCCESS;
   }
   
   bool debug;
@@ -66,7 +69,7 @@ int main(int argc, char** argv)
   if (!FileExists(inputpath))
   {
     std::cout << "ERROR: Input file does not exist at location " << inputpath << std::endl;
-    return 1;
+    return QUIT_ERROR_INPUT;
   }
 
   try
@@ -124,6 +127,8 @@ int main(int argc, char** argv)
   catch (std::exception const& error)
   {
     std::cerr << "pixel_generator: " << error.what() << std::endl;
-    return EXIT_FAILURE;
+    return QUIT_ERROR_OTHER;
   }
+
+  return QUIT_SUCCESS;
 }
