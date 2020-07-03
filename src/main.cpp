@@ -10,80 +10,85 @@ int main(int argc, char** argv)
     return 0;
   }
 
-  TODO("file name as argv[1] and -f")
-  std::string originPath = argv[0];
-  std::string inputFile = argv[1];
-
-  if (!FileExists(inputFile))
-  {
-    std::cout << "ERROR: Input file does not exist at location " << inputFile << std::endl;
-    //return 1;
-  }
-
+  TODO("try catch block with proper error handling")
   cxxopts::Options options("test", "A brief description");
   options.positional_help("<input file> <output file (optional)>");
 
+  TODO("make help more readable")
   options.add_options()
-    ("b,bar", "Param bar", cxxopts::value<std::string>())
+    ("r,resize", "Resize non power of two -r larger, -r smaller, -r nearest", cxxopts::value<std::string>()->default_value("nearest"))
     ("d,debug", "Enable debugging", cxxopts::value<bool>()->default_value("false"))
-    ("f,foo", "Param foo", cxxopts::value<int>()->default_value("10"))
+    ("t,threads", "Thread count", cxxopts::value<int>()->default_value("1"))
     ("h,help", "Print usage")
     ("i,input", "Input file", cxxopts::value<std::string>())
     ("o,output", "Output file", cxxopts::value<std::string>())
-    ("positional", "Positional parameters",
-      cxxopts::value<std::string>())
-    ;
+    ("positional", "Positional parameters", cxxopts::value<std::vector<std::string>>());
     
-  options.parse_positional({ "input", "positional" });
+  options.parse_positional({ "input", "output", "positional" });
   auto result = options.parse(argc, argv);
 
   if (result.count("help"))
   {
     std::cout << options.help() << std::endl;
-    //exit(0);
+    exit(0);
   }
-  bool debug = result["debug"].as<bool>();
-  std::string bar;
-  if (result.count("bar"))
-    bar = result["bar"].as<std::string>();
-  int foo = result["foo"].as<int>();
+  
+  bool debug;
+  std::string resize;
+  int threads;
+
+  if (result.count("debug"))
+    debug = result["debug"].as<bool>();
+
+  if (result.count("resize"))
+    resize = result["resize"].as<std::string>();
+
+  if (result.count("threads"))
+    threads = result["threads"].as<int>();
 
 
-  std::cout << "Foo: " << foo << std::endl;
-  std::cout << "Bar: " << bar << std::endl;
+  std::cout << "Resize: " << resize << std::endl;
+  std::cout << "Threads: " << threads << std::endl;
+  std::cout << "Debug: " << debug << std::endl;
 
-
-  if (result.count("bar"))
-    bar = result["bar"].as<std::string>();
-
-  std::cout << "Bar: " << bar << std::endl;
+  std::string inputpath = "";
+  std::string outputpath = "";
 
   if (result.count("input"))
-    bar = result["input"].as<std::string>();
+    inputpath = result["input"].as<std::string>();
 
-  std::cout << "First: " << bar << std::endl;
+  if (result.count("output"))
+    outputpath = result["output"].as<std::string>();
+  
+  std::cout << "Input: " << inputpath << std::endl;
+  std::cout << "Output: " << outputpath << std::endl;
 
-  //cxxopts::Options options("My Test", "a test");
-  //options.add_options()
-  //  ("f,file", "File name", cxxopts::value<std::string>())
-  //  ("npt,nonpoweroftwo", "Non Power of Two", cxxopts::value<std::string>())
-  //  ("t,threads", "Thread Count", cxxopts::value<int>())
-  //  ("help", "Print help");
-
-  //options.parse_positional("file");
-  //auto result = options.parse(argc, argv);
-
-  //std::cout << "File: " << result["file"].as<std::string>() << std::endl;
+  if (!FileExists(inputpath))
+  {
+    std::cout << "ERROR: Input file does not exist at location " << inputpath << std::endl;
+    return 1;
+  }
 
   try
   {
-    png::image< png::rgba_pixel > image(inputFile);
+    png::image< png::rgba_pixel > image(inputpath);
 
     png::uint_32 originalWidth =  image.get_width();
     png::uint_32 originalHeight = image.get_height();
 
     png::uint_32 pow2Width = originalWidth;
     png::uint_32 pow2Height = originalHeight;
+
+    NonPowerOfTwoResize resizeOption = NonPowerOfTwoResize::NEAREST;
+
+    if (StringCompare(resize, "larger"))
+    {
+      resizeOption = NonPowerOfTwoResize::NEXT_LARGEST;
+    }
+    else if (StringCompare(resize, "smaller"))
+    {
+      resizeOption = NonPowerOfTwoResize::NEXT_SMALLEST;
+    }
 
     if (!IsPowerOfTwo(originalWidth))
     {
@@ -92,7 +97,7 @@ int main(int argc, char** argv)
         "Should the output not be as expected please manually resize to power of 2."
         << std::endl;
 
-      pow2Width = CalculatePowerOfTwo(originalWidth);
+      pow2Width = CalculatePowerOfTwo(originalWidth, resizeOption);
     }
 
     if (!IsPowerOfTwo(originalHeight))
@@ -102,17 +107,19 @@ int main(int argc, char** argv)
         "Should the output not be as expected please manually resize to power of 2."
         << std::endl;
 
-      pow2Height = CalculatePowerOfTwo(originalHeight);
+      pow2Height = CalculatePowerOfTwo(originalHeight, resizeOption);
     }
 
+    TODO("implement resize with interpolation")
     Resize(image, pow2Width, pow2Height);
 
-    MipChainFill fill = MipChainFill(image);
+    TODO("implement MT and check compiled libs against MD/MT")
+    MipChainFill fill = MipChainFill(image).SetThreadCount(threads);
 
     png::image< png::rgba_pixel > output = fill.CompositeAlphaMip();
 
-    TODO("input name")
-    output.write("resized.png");
+    TODO("check for set outputpath")
+    output.write(outputpath);
   }
   catch (std::exception const& error)
   {

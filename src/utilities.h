@@ -42,7 +42,7 @@ inline png::rgba_pixel LerpPixel(png::rgba_pixel a, png::rgba_pixel b, float t)
   float green = FastLerp(a.green, b.green, t);
   float blue = FastLerp(a.blue, b.blue, t);
 
-  return png::rgba_pixel(red, green, blue, 255);
+  return png::rgba_pixel((png::byte)red, (png::byte)green, (png::byte)blue, 255);
 }
 
 inline void Resize(alpha_img& input, const png::uint_32 width, const png::uint_32 height)
@@ -72,22 +72,23 @@ inline png::uint_32 CalculatePowerOfTwo(const png::uint_32 x, NonPowerOfTwoResiz
 {
   png::uint_32 xpow;
 
+  TODO("check floating point errors with extreme values")
   switch (option)
   {
   case NonPowerOfTwoResize::NEXT_SMALLEST:
   default:
   {
-    xpow = floor(log2(x));
+    xpow = (png::uint_32)floor(log2(x));
     break;
   }
   case NonPowerOfTwoResize::NEAREST:
   {
-    xpow = round(log2(x));
+    xpow = (png::uint_32)round(log2(x));
     break;
   }
   case NonPowerOfTwoResize::NEXT_LARGEST:
   {
-    xpow = ceil(log2(x));
+    xpow = (png::uint_32)ceil(log2(x));
     break;
   }
   }
