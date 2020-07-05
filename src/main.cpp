@@ -113,7 +113,6 @@ int main(int argc, char** argv)
       pow2Height = CalculatePowerOfTwo(originalHeight, resizeOption);
     }
 
-    TODO("implement resize with interpolation")
     Resize(image, pow2Width, pow2Height);
 
     TODO("implement MT and check compiled libs against MD/MT")

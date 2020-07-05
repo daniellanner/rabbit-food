@@ -45,9 +45,35 @@ inline png::rgba_pixel LerpPixel(png::rgba_pixel a, png::rgba_pixel b, float t)
   return png::rgba_pixel((png::byte)red, (png::byte)green, (png::byte)blue, 255);
 }
 
+/// <summary>
+/// Naive resize based on unweighted nearest neighbour. It really is preferred to enter a power of 2 texture.
+/// Note for big textures: Allocates power of two image on stack, then deep copies to original image.
+/// </summary>
+/// <param name="input">Input texture per ref. will be overwritten.</param>
+/// <param name="width">Width to resize to.</param>
+/// <param name="height">Height to resize to.</param>
 inline void Resize(alpha_img& input, const png::uint_32 width, const png::uint_32 height)
 {
-  input.resize(width, height);
+  const png::uint_32 oldWidth = input.get_width();
+  const png::uint_32 oldHeight = input.get_height();
+
+  alpha_img resized(width, height);
+
+  for (png::uint_32 y = 0; y < height; ++y)
+  {
+    float yfactor = (float)y / (float)height;
+    png::uint_32 yidx = (png::uint_32)(yfactor * oldHeight);
+
+    for (png::uint_32 x = 0; x < width; ++x)
+    {
+      float xfactor = (float)x / (float)width;
+      png::uint_32 xidx = (png::uint_32)(xfactor * oldWidth);
+
+      resized[y][x] = input[yidx][xidx];
+    }
+  }
+  input.resize(0, 0);
+  input = resized;
 }
 
 inline bool FileExists(const std::string& name) {
