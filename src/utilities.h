@@ -57,8 +57,9 @@ inline void Resize(alpha_img& input, const png::uint_32 width, const png::uint_3
   const png::uint_32 oldWidth = input.get_width();
   const png::uint_32 oldHeight = input.get_height();
 
-  alpha_img resized(width, height);
+  alpha_img tmp = input;
 
+  input.resize(width, height);
   for (png::uint_32 y = 0; y < height; ++y)
   {
     float yfactor = (float)y / (float)height;
@@ -69,11 +70,9 @@ inline void Resize(alpha_img& input, const png::uint_32 width, const png::uint_3
       float xfactor = (float)x / (float)width;
       png::uint_32 xidx = (png::uint_32)(xfactor * oldWidth);
 
-      resized[y][x] = input[yidx][xidx];
+      input[y][x] = tmp[yidx][xidx];
     }
   }
-  input.resize(0, 0);
-  input = resized;
 }
 
 inline bool FileExists(const std::string& name) {
