@@ -21,7 +21,6 @@ int main(int argc, char** argv)
   options.add_options()
     ("r,resize", "Resize non power of two -r larger, -r smaller, -r nearest", cxxopts::value<std::string>()->default_value("nearest"))
     ("d,debug", "Enable debugging", cxxopts::value<bool>()->default_value("false"))
-    ("t,threads", "Thread count", cxxopts::value<int>()->default_value("1"))
     ("h,help", "Print usage")
     ("i,input", "Input file", cxxopts::value<std::string>())
     ("o,output", "Output file", cxxopts::value<std::string>())
@@ -46,12 +45,7 @@ int main(int argc, char** argv)
   if (result.count("resize"))
     resize = result["resize"].as<std::string>();
 
-  if (result.count("threads"))
-    threads = result["threads"].as<int>();
-
-
   std::cout << "Resize: " << resize << std::endl;
-  std::cout << "Threads: " << threads << std::endl;
   std::cout << "Debug: " << debug << std::endl;
 
   std::string inputpath = "";
@@ -115,8 +109,7 @@ int main(int argc, char** argv)
 
     Resize(image, pow2Width, pow2Height);
 
-    TODO("implement MT and check compiled libs against MD/MT")
-    MipChainFill fill = MipChainFill(image).SetThreadCount(threads);
+    MipChainFill fill = MipChainFill(image);
 
     png::image< png::rgba_pixel > output = fill.CompositeAlphaMip();
 

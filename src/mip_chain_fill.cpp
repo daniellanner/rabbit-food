@@ -8,27 +8,27 @@ MipChainFill::MipChainFill(alpha_img img) : _originalImage(img)
 
 alpha_img MipChainFill::CompositeAlphaMip()
 {
-  mipmap map = mipmap();
+  mipmap vec = mipmap();
 
   png::uint_32 pow2min = std::min(_width, _height); // smallest dimension to reach 1 first
 
   int iterations = (int)log2(pow2min);
-  map.reserve(iterations);
+  vec.reserve(iterations);
 
-  map.push_back(_originalImage);
+  vec.push_back(_originalImage);
 
   for (size_t i = 0; i < iterations; ++i)
   {
-    map.push_back(AlphaMip(map.back()));
+    vec.push_back(AlphaMip(vec.back()));
   }
 
-  for (int largeMapIdx = (int)map.size() - 2, smallMapIdx = (int)map.size() - 1;
+  for (int largeMapIdx = (int)vec.size() - 2, smallMapIdx = (int)vec.size() - 1;
     largeMapIdx >= 0;
     --largeMapIdx, --smallMapIdx)
   {
 
-    auto larger = &map[largeMapIdx];
-    auto smaller = &map[smallMapIdx];
+    auto larger = &vec[largeMapIdx];
+    auto smaller = &vec[smallMapIdx];
 
     png::uint_32 largerWidth = larger->get_width();
     png::uint_32 largerHeight = larger->get_height();
@@ -60,7 +60,7 @@ alpha_img MipChainFill::CompositeAlphaMip()
     }
   }
 
-  auto returnImg = map.front();
+  auto returnImg = vec.front();
 
   //apply original alpha
   for (png::uint_32 y = 0; y < _height; ++y)
@@ -72,16 +72,6 @@ alpha_img MipChainFill::CompositeAlphaMip()
   }
 
   return returnImg;
-}
-
-MipChainFill& MipChainFill::SetThreadCount(int threadCount)
-{
-  _threadCount = threadCount;
-  
-  _threadCount = std::max(_threadCount, 1);
-  _threadCount = std::min(_threadCount, 64);
-
-  return *this;
 }
 
 alpha_img MipChainFill::AlphaMip(const alpha_img& input)
