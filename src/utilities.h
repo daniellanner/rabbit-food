@@ -80,6 +80,10 @@ inline bool FileExists(const std::string& name) {
   return f.good();
 }
 
+inline bool IsPNG(const std::string& name) {
+  return name.length() > 3 && StringCompare(name.substr(name.length() - 4, 4), ".png");
+}
+
 // https://stackoverflow.com/questions/600293/how-to-check-if-a-number-is-a-power-of-2
 inline bool IsPowerOfTwo(const png::uint_32 x)
 {

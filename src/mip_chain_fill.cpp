@@ -87,38 +87,48 @@ alpha_img MipChainFill::AlphaMip(const alpha_img& input)
   png::uint_32 originalX = 0;
   png::uint_32 originalY = 0;
 
+  png::uint_32 north = 0;
+  png::uint_32 east = 0;
+  png::uint_32 south = 0;
+  png::uint_32 west = 0;
+
   for (size_t y = 0; y < height; ++y, originalY += 2)
   {
-    originalY = std::min(originalY, original_height - 2);
+    north = std::max((int)originalY - 1, 0);
+    south = std::min(originalY + 1, original_height - 1);
+
     originalX = 0;
 
     for (size_t x = 0; x < width; ++x, originalX += 2)
     {
-      originalX = std::min(originalX, original_width - 2);
+      east = std::min(originalX + 1, original_width - 1);
+      west = std::max((int)originalX - 1, 0);
 
-      png::rgba_pixel pxl;
+      png::rgba_pixel pxl = input.get_pixel(originalX, originalY);
 
-      png::rgba_pixel pxl1 = input.get_pixel(originalX, originalY);
-      png::rgba_pixel pxl2 = input.get_pixel(originalX + 1, originalY);
-      png::rgba_pixel pxl3 = input.get_pixel(originalX, originalY + 1);
-      png::rgba_pixel pxl4 = input.get_pixel(originalX + 1, originalY + 1);
+      png::rgba_pixel pxlNorth = input.get_pixel(originalX, north);
+      png::rgba_pixel pxlEast = input.get_pixel(east, originalY);
+      png::rgba_pixel pxlSouth = input.get_pixel(originalX, south);
+      png::rgba_pixel pxlWest = input.get_pixel(west, originalY);
 
-
-      pxl = pxl1;
-
-      if (pxl2.alpha > pxl.alpha)
+      if (pxlNorth.alpha > pxl.alpha)
       {
-        pxl = pxl2;
+        pxl = pxlNorth;
       }
 
-      if (pxl3.alpha > pxl.alpha)
+      if (pxlEast.alpha > pxl.alpha)
       {
-        pxl = pxl3;
+        pxl = pxlEast;
       }
 
-      if (pxl4.alpha > pxl.alpha)
+      if (pxlSouth.alpha > pxl.alpha)
       {
-        pxl = pxl4;
+        pxl = pxlSouth;
+      }
+
+      if (pxlWest.alpha > pxl.alpha)
+      {
+        pxl = pxlWest;
       }
 
       if (width == 1 || height == 1)

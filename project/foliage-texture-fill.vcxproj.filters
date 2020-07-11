@@ -29,5 +29,8 @@
     <ClInclude Include="..\src\utilities.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\error_msg.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

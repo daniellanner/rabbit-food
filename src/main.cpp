@@ -1,10 +1,13 @@
-#include "utilities.h"
-#include "mip_chain_fill.h"
+// std
+#include <chrono>
+
+// libs
 #include "cxxopts.hpp"
 
-#define QUIT_SUCCESS 0
-#define QUIT_ERROR_INPUT 1
-#define QUIT_ERROR_OTHER 2
+// my bs
+#include "utilities.h"
+#include "mip_chain_fill.h"
+#include "error_msg.h"
 
 int main(int argc, char** argv)
 {
@@ -13,59 +16,64 @@ int main(int argc, char** argv)
     return QUIT_ERROR_INPUT;
   }
 
-  TODO("try catch block with proper error handling")
-  cxxopts::Options options("test", "A brief description");
-  options.positional_help("<input file> <output file (optional)>");
-
-  TODO("make help more readable")
-  options.add_options()
-    ("r,resize", "Resize non power of two -r larger, -r smaller, -r nearest", cxxopts::value<std::string>()->default_value("nearest"))
-    ("d,debug", "Enable debugging", cxxopts::value<bool>()->default_value("false"))
-    ("h,help", "Print usage")
-    ("i,input", "Input file", cxxopts::value<std::string>())
-    ("o,output", "Output file", cxxopts::value<std::string>())
-    ("positional", "Positional parameters", cxxopts::value<std::vector<std::string>>());
-    
-  options.parse_positional({ "input", "output", "positional" });
-  auto result = options.parse(argc, argv);
-
-  if (result.count("help"))
-  {
-    std::cout << options.help() << std::endl;
-    return QUIT_SUCCESS;
-  }
-  
-  bool debug;
-  std::string resize;
-  int threads;
-
-  if (result.count("debug"))
-    debug = result["debug"].as<bool>();
-
-  if (result.count("resize"))
-    resize = result["resize"].as<std::string>();
-
-  std::cout << "Resize: " << resize << std::endl;
-  std::cout << "Debug: " << debug << std::endl;
-
+  // input options
+  bool verbose = false;
+  std::string resize = "";
   std::string inputpath = "";
   std::string outputpath = "";
 
-  if (result.count("input"))
-    inputpath = result["input"].as<std::string>();
-
-  if (result.count("output"))
-    outputpath = result["output"].as<std::string>();
-  
-  std::cout << "Input: " << inputpath << std::endl;
-  std::cout << "Output: " << outputpath << std::endl;
-
-  if (!FileExists(inputpath))
+  // read input arguments and populate above variables
+  try
   {
-    std::cout << "ERROR: Input file does not exist at location " << inputpath << std::endl;
+    cxxopts::Options options("test", "A brief description");
+    options.positional_help("<input file> <output file (optional)>");
+
+    TODO("make help more readable")
+    options.add_options()
+      ("r,resize", "Resize non power of two -r larger, -r smaller, -r nearest", cxxopts::value<std::string>()->default_value("nearest"))
+      ("v,verbose", "Print status", cxxopts::value<bool>()->default_value("false"))
+      ("h,help", "Print usage")
+      ("i,input", "Input file", cxxopts::value<std::string>())
+      ("o,output", "Output file", cxxopts::value<std::string>())
+      ("positional", "Positional parameters", cxxopts::value<std::vector<std::string>>());
+
+    options.parse_positional({ "input", "output", "positional" });
+    auto result = options.parse(argc, argv);
+
+    if (result.count("help"))
+    {
+      std::cout << options.help() << std::endl;
+      return QUIT_SUCCESS;
+    }
+
+    if (result.count("verbose"))
+      verbose = result["verbose"].as<bool>();
+
+    if (result.count("resize"))
+      resize = result["resize"].as<std::string>();
+
+    if (result.count("input"))
+      inputpath = result["input"].as<std::string>();
+
+    if (result.count("output"))
+      outputpath = result["output"].as<std::string>();
+  }
+  catch (std::exception const& error)
+  {
+    std::cerr << ERR_MSG_ARGV << error.what() << std::endl;
     return QUIT_ERROR_INPUT;
   }
 
+  // input arguments are valid
+  // check input path
+  if (!FileExists(inputpath) || !IsPNG(inputpath))
+  {
+    std::cout << ERR_MSG_INPUT << inputpath << std::endl;
+    return QUIT_ERROR_INPUT;
+  }
+
+  // input path is valid
+  // now the work may begin
   try
   {
     png::image< png::rgba_pixel > image(inputpath);
@@ -78,6 +86,8 @@ int main(int argc, char** argv)
 
     NonPowerOfTwoResize resizeOption = NonPowerOfTwoResize::NEAREST;
 
+    std::chrono::steady_clock::time_point startTime;
+
     if (StringCompare(resize, "larger"))
     {
       resizeOption = NonPowerOfTwoResize::NEXT_LARGEST;
@@ -87,38 +97,66 @@ int main(int argc, char** argv)
       resizeOption = NonPowerOfTwoResize::NEXT_SMALLEST;
     }
 
+    bool doResize = false;
+
     if (!IsPowerOfTwo(originalWidth))
     {
-      std::cout <<
-        "WARNING: width of image is not power of 2. Attempting resize.\n"
-        "Should the output not be as expected please manually resize to power of 2."
-        << std::endl;
-
+      if (verbose)
+      {
+        std::cout << ERR_MSG_POWER2 << std::endl;
+      }
       pow2Width = CalculatePowerOfTwo(originalWidth, resizeOption);
+      doResize = true;
     }
 
     if (!IsPowerOfTwo(originalHeight))
     {
-      std::cout <<
-        "WARNING: height of image is not power of 2. Attempting resize.\n"
-        "Should the output not be as expected please manually resize to power of 2."
-        << std::endl;
-
+      if (verbose)
+      {
+        std::cout << ERR_MSG_POWER2 << std::endl;
+      }
       pow2Height = CalculatePowerOfTwo(originalHeight, resizeOption);
+      doResize = true;
     }
 
-    Resize(image, pow2Width, pow2Height);
+    if (doResize)
+    {
+      if (verbose)
+      {
+        std::cout << "Start resize to " << resize << std::endl;
+        startTime = std::chrono::high_resolution_clock::now();
+      }
+
+      Resize(image, pow2Width, pow2Height);
+
+      if (verbose)
+      {
+        auto time = std::chrono::high_resolution_clock::now() - startTime;
+        std::cout << "Resize took " << time / std::chrono::milliseconds(1) << " ms.\n" << std::endl;
+      }
+    }
 
     MipChainFill fill = MipChainFill(image);
 
+    if (verbose)
+    {
+      std::cout << "Start color mip map process" << std::endl;
+      startTime = std::chrono::high_resolution_clock::now();
+    }
+
     png::image< png::rgba_pixel > output = fill.CompositeAlphaMip();
 
-    TODO("check for set outputpath")
+    if (verbose)
+    {
+      auto time = std::chrono::high_resolution_clock::now() - startTime;
+      std::cout << "Color mip map process took " << time / std::chrono::milliseconds(1) << " ms." << std::endl;
+    }
+
     output.write(outputpath);
   }
   catch (std::exception const& error)
   {
-    std::cerr << "pixel_generator: " << error.what() << std::endl;
+    std::cerr << ERR_MSG_OUTPUT << error.what() << std::endl;
     return QUIT_ERROR_OTHER;
   }
 
