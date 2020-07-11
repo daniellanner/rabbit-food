@@ -40,7 +40,7 @@ alpha_img MipChainFill::CompositeAlphaMip()
     {
       for (png::uint_32 x = 0; x < largerWidth; ++x)
       {
-        png::rgba_pixel pxl = larger->get_pixel(x, y);
+        png::rgba_pixel pxl = (*larger)[y][x];
 
         if (pxl.alpha < 255)
         {
@@ -51,7 +51,7 @@ alpha_img MipChainFill::CompositeAlphaMip()
           png::uint_32 xx = (png::uint_32)(wdelta * (float)smallerWidth);
           png::uint_32 yy = (png::uint_32)(hdelta * (float)smallerHeight);
 
-          png::rgba_pixel ppxl = smaller->get_pixel(xx, yy);
+          png::rgba_pixel ppxl = (*smaller)[yy][xx];
 
           pxl = LerpPixel(ppxl, pxl, pxl.alpha / 255.0f);
           larger->set_pixel(x, y, ppxl);
@@ -76,11 +76,11 @@ alpha_img MipChainFill::CompositeAlphaMip()
 
 alpha_img MipChainFill::AlphaMip(const alpha_img& input)
 {
-  const png::uint_32 original_width = input.get_width();
-  const png::uint_32 original_height = input.get_height();
+  const png::uint_32 originalWidth = input.get_width();
+  const png::uint_32 originalHeight = input.get_height();
 
-  const png::uint_32 width = original_width / 2;
-  const png::uint_32 height = original_height / 2;
+  const png::uint_32 width = originalWidth / 2;
+  const png::uint_32 height = originalHeight / 2;
 
   alpha_img image(width, height);
 
@@ -95,21 +95,21 @@ alpha_img MipChainFill::AlphaMip(const alpha_img& input)
   for (size_t y = 0; y < height; ++y, originalY += 2)
   {
     north = std::max((int)originalY - 1, 0);
-    south = std::min(originalY + 1, original_height - 1);
+    south = std::min(originalY + 1, originalHeight - 1);
 
     originalX = 0;
 
     for (size_t x = 0; x < width; ++x, originalX += 2)
     {
-      east = std::min(originalX + 1, original_width - 1);
+      east = std::min(originalX + 1, originalWidth - 1);
       west = std::max((int)originalX - 1, 0);
 
-      png::rgba_pixel pxl = input.get_pixel(originalX, originalY);
+      png::rgba_pixel pxl = input[originalY][originalX];
 
-      png::rgba_pixel pxlNorth = input.get_pixel(originalX, north);
-      png::rgba_pixel pxlEast = input.get_pixel(east, originalY);
-      png::rgba_pixel pxlSouth = input.get_pixel(originalX, south);
-      png::rgba_pixel pxlWest = input.get_pixel(west, originalY);
+      png::rgba_pixel pxlNorth = input[north]    [originalX];
+      png::rgba_pixel pxlEast  = input[originalY][east];
+      png::rgba_pixel pxlSouth = input[south]    [originalX];
+      png::rgba_pixel pxlWest  = input[originalY][west];
 
       if (pxlNorth.alpha > pxl.alpha)
       {
