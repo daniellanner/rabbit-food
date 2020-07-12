@@ -124,3 +124,33 @@ inline png::uint_32 CalculatePowerOfTwo(const png::uint_32 x, NonPowerOfTwoResiz
 
   return (png::uint_32)pow(2, xpow);
 }
+
+inline std::string GetOutputPath(std::string input, std::string output, bool overwrite)
+{
+  std::string oname = output;
+
+  // check if file was dragged on executable
+  if (output.length() == 0)
+  {
+    std::string substr = input.substr(0, input.length() - 4);
+
+    if (substr.length() > 0)
+    {
+      if (FileExists(substr + "_fill.png") && !overwrite)
+      {
+        int ctr = 0;
+        while (FileExists(substr + "_fill_" + std::to_string(ctr) + ".png"))
+        {
+          ++ctr;
+        }
+
+        oname = substr + "_fill_" + std::to_string(ctr) + ".png";
+      }
+      else
+      {
+        oname = substr + "_fill.png";
+      }
+    }
+  }
+  return oname;
+}

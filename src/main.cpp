@@ -18,6 +18,7 @@ int main(int argc, char** argv)
 
   // input options
   bool verbose = false;
+  bool overwrite = false;
   std::string resize = "";
   std::string inputpath = "";
   std::string outputpath = "";
@@ -32,9 +33,10 @@ int main(int argc, char** argv)
     options.add_options()
       ("r,resize", "Resize non power of two -r larger, -r smaller, -r nearest", cxxopts::value<std::string>()->default_value("nearest"))
       ("v,verbose", "Print status", cxxopts::value<bool>()->default_value("false"))
+      ("o,overwrite", "Overwrite existing outputfile", cxxopts::value<bool>()->default_value("false"))
       ("h,help", "Print usage")
-      ("i,input", "Input file", cxxopts::value<std::string>())
-      ("o,output", "Output file", cxxopts::value<std::string>())
+      ("input", "Input file", cxxopts::value<std::string>())
+      ("output", "Output file", cxxopts::value<std::string>())
       ("positional", "Positional parameters", cxxopts::value<std::vector<std::string>>());
 
     options.parse_positional({ "input", "output", "positional" });
@@ -48,6 +50,9 @@ int main(int argc, char** argv)
 
     if (result.count("verbose"))
       verbose = result["verbose"].as<bool>();
+
+    if (result.count("overwrite"))
+      overwrite = result["overwrite"].as<bool>();
 
     if (result.count("resize"))
       resize = result["resize"].as<std::string>();
@@ -152,7 +157,7 @@ int main(int argc, char** argv)
       std::cout << "Color mip map process took " << time / std::chrono::milliseconds(1) << " ms." << std::endl;
     }
 
-    output.write(outputpath);
+    output.write(GetOutputPath(inputpath, outputpath, overwrite));
   }
   catch (std::exception const& error)
   {
