@@ -1,4 +1,4 @@
-# foliage-texture-fill
+# rabbid-fill
 (very WIP)
 
 An implementation of Sean Feeley's mip chains flood-filling from his 2019 GDC talk [Interactive Wind and Vegetation in 'God of War'](https://schedule2019.gdconf.com/session/interactive-wind-and-vegetation-in-god-of-war/860472) which I was lucky enough to attend.
