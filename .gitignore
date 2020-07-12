@@ -37,3 +37,6 @@
 /Debug/
 /project/x64/
 /project/Debug/
+
+# res and test files
+/_res/
