@@ -26,6 +26,13 @@
     <ClInclude Include="..\src\error_msg.h" />
     <ClInclude Include="..\src\mip_chain_fill.h" />
     <ClInclude Include="..\src\utilities.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="rabbit-fill.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\res\rabbit_fill.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -89,7 +96,7 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
