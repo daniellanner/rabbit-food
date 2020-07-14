@@ -1,4 +1,4 @@
-![](rabbit-fill-header.png)
+![](rabbit-food-header.png)
 
 ## Introduction
 
@@ -34,7 +34,7 @@ Drag and drop a .png file onto the .exe application. A new .png with the origina
 
 Commandline arguments:
 
-rabbit-fill.exe <inputpath> <outputpath> <optional arguments>
+rabbit-food.exe <inputpath> <outputpath> <optional arguments>
 
 -h, help:	(bool) print help
 

@@ -29,7 +29,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="rabbit-fill.rc" />
+    <ResourceCompile Include="rabbit-food.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\rabbit_fill.ico" />

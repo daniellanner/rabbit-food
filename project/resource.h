@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by rabbit-fill.rc
+// Used by rabbit-food.rc
 //
 #define IDI_ICON1                       101
 
