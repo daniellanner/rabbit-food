@@ -26,9 +26,6 @@
 *.out
 *.app
 
-# Test Files
-*.png
-
 # vs
 /.vs/
 
