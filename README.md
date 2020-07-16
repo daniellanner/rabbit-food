@@ -27,8 +27,8 @@ Loaded into Unity engine and creating automatic mip maps. See the colors on the 
 ### Drag and Drop
 
 Drag and drop a .png file onto the .exe application. A new .png with the original name and the suffix "\_fill" will be created in the same directory as the original file.
-![](drag-drop.gif)
 
+![](drag-drop.gif)
 
 
 ### Commandline
