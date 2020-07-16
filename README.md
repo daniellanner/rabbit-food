@@ -32,20 +32,26 @@ Drag and drop a .png file onto the .exe application. A new .png with the origina
 
 ### Commandline
 
-Commandline arguments:
+```
+rabbit-food.exe inputpath.png [OUTPUT_FILE] [--help, -h] [--verbose, -v] [--overwrite, -o] [--resize=smaller|nearest|larger, -r]
+```
 
-rabbit-food.exe <inputpath> <outputpath> <optional arguments>
 
--h, help:	(bool) print help
-
--v, verbose:	(bool) print status while computing
-
--r, resize:	(argv) "smaller", "nearest" or "larger" determines the behaviour if the imported image is non-power of two
-
--o, overwrite:	(bool) if the output path already exists, overwrite file or find next incremental name
+Command | Description
+--- | --- 
+**help** | print help
+**verbose** | print status while computing
+**resize** | "smaller", "nearest" or "larger" determines the behaviour if the imported image is non-power of two
+**overwrite** | if the output path already exists, overwrite file or find next incremental name
 
 
 
 ## Limitations
 
-Power of 2
+This method relies the dimensions of the image to be power of 2 (32, 64, 128, 256, 512,...). The dimensions do not have to be identical. An image with 32 px x 1024 px is perfectly legal.
+
+Should the image not be power of two it will be resized based on the input settings and the output image will have the new dimensions.
+
+
+## License
+You may find the licenses of the used libraries in their respective directories. Do with the code and binary release of my tool as you will. It would make my day if you sent me a mail what you did with it. Don't hesitate to reach out in case you encounter any bugs or need additional functionality.
