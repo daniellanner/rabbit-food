@@ -33,7 +33,8 @@ Drag and drop a .png file onto the .exe application. A new .png with the origina
 ### Commandline
 
 ```
-rabbit-food.exe inputpath.png [OUTPUT_FILE] [--help, -h] [--verbose, -v] [--overwrite, -o] [--resize=smaller|nearest|larger, -r]
+rabbit-food.exe inputpath.png [OUTPUT_FILE] [--help, -h] [--verbose, -v] \
+[--overwrite, -o] [--resize=smaller|nearest|larger, -r]
 ```
 
 
@@ -48,7 +49,7 @@ Command | Description
 
 ## Limitations
 
-This method relies the dimensions of the image to be power of 2 (32, 64, 128, 256, 512,...). The dimensions do not have to be identical. An image with 32 px x 1024 px is perfectly legal.
+This method relies the dimensions of the image to be power of 2 (32, 64, 128, 256, 512,...). The dimensions do not have to be identical. An image with 32px x 1024px is perfectly legal.
 
 Should the image not be power of two it will be resized based on the input settings and the output image will have the new dimensions.
 
