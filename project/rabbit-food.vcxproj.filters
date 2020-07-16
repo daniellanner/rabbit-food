@@ -42,7 +42,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\res\rabbit_fill.ico">
+    <Image Include="..\res\rabbit-food.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

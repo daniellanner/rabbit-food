@@ -32,7 +32,7 @@
     <ResourceCompile Include="rabbit-food.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\res\rabbit_fill.ico" />
+    <Image Include="..\res\rabbit-food.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
