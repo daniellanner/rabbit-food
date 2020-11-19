@@ -1,4 +1,4 @@
-![](doc-img/rabbit-food-header.png)
+![](doc-img/rabbit-food-header.jpg)
 
 ## Introduction
 
