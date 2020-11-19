@@ -1,4 +1,4 @@
-![](doc-img/rabbit-food-header.png)
+<img align="center" src="doc-img/rabbit-food-header.png" alt="rabbit-food">
 
 ## Introduction
 
