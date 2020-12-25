@@ -1,4 +1,4 @@
-![](doc-img/rabbit-food-header.png)
+![](doc-img/readme-header.png)
 
 ## Introduction
 
@@ -35,7 +35,7 @@ rabbit-food.exe inputpath.png [OUTPUT_FILE] [--help, -h] [--verbose, -v] \
 
 
 Command | Description
---- | --- 
+--- | ---
 **help** | print help
 **verbose** | print status while computing
 **resize** | "smaller", "nearest" or "larger" determines the behaviour if the imported image is non-power-of-two
